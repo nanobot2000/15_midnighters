@@ -2,13 +2,23 @@ import pytz
 import requests
 from datetime import datetime
 
+MIDNIGHT_HOUR = 0
+MORNING_HOUR = 6
 
 def load_attempts():
     api_url = 'http://devman.org/api/challenges/solution_attempts/'
-    pages = requests.get(api_url).json().get('number_of_pages')
-    for page in range(1, pages+1):
-        yield from requests.get(api_url,
-                                params={'page': page}).json().get('records')
+    page = 1
+    while True:
+        attempts_response = requests.get(
+            api_url,
+            params={'page': page}
+        ).json()
+        yield from attempts_response['records']
+        total_pages = attempts_response['number_of_pages']
+        if page == total_pages:
+            break
+        else:
+            page += 1
 
 
 def get_midnighters(attempts):
@@ -16,7 +26,7 @@ def get_midnighters(attempts):
     for attempt in attempts:
         time_zone = pytz.timezone(attempt['timezone'])
         attempt_time = datetime.fromtimestamp(attempt['timestamp'], time_zone)
-        if 0 <= attempt_time.hour < 6:
+        if MIDNIGHT_HOUR <= attempt_time.hour < MORNING_HOUR:
             midnighters.add(attempt['username'])
     return midnighters
 
