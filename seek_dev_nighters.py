@@ -2,8 +2,6 @@ import pytz
 import requests
 from datetime import datetime
 
-MIDNIGHT_HOUR = 0
-MORNING_HOUR = 6
 
 def load_attempts():
     api_url = 'http://devman.org/api/challenges/solution_attempts/'
@@ -22,11 +20,13 @@ def load_attempts():
 
 
 def get_midnighters(attempts):
+    midnight_hour = 0
+    morning_hour = 6
     midnighters = set()
     for attempt in attempts:
         time_zone = pytz.timezone(attempt['timezone'])
         attempt_time = datetime.fromtimestamp(attempt['timestamp'], time_zone)
-        if MIDNIGHT_HOUR <= attempt_time.hour < MORNING_HOUR:
+        if midnight_hour <= attempt_time.hour < morning_hour:
             midnighters.add(attempt['username'])
     return midnighters
 
