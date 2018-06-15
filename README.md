@@ -4,7 +4,7 @@ Script get data from Devman API that retuurns user solution attempts and print u
 
 # Quickstart
 
-The script requires the installed Python interpreter version 3.6 and all dependencies from requirements.txt
+The script requires the installed Python interpreter version 3.x and all dependencies from requirements.txt
 
 To install dependencies you should run command:
 
